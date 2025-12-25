@@ -3,9 +3,11 @@ import Navbar from '../components/Navbar';
 import ChatWindow from '../components/ChatWindow';
 import RoleSelector from '../components/RoleSelector';
 import { useAuth } from '../context/AuthContext';
+import { useNavigate } from 'react-router-dom';
 
 const Dashboard = () => {
   const { user, role } = useAuth();
+  const navigate = useNavigate();
 
   return (
     <div>
@@ -16,6 +18,13 @@ const Dashboard = () => {
           <section className="home-panel panel">
             <h2>CampusPulse</h2>
             <p className="muted">AI-powered smart college helpdesk. Get instant answers for timetables, assignments, events, notices and more.</p>
+
+            {user && (
+              <div style={{marginTop:12, padding:12, borderRadius:12, background:'linear-gradient(90deg,#fafafa,#ffffff)'}}>
+                <strong>Welcome, {user.name}.</strong>
+                <div className="muted">You are signed in as {role ? role.charAt(0).toUpperCase() + role.slice(1) : 'Guest'}.</div>
+              </div>
+            )}
 
             {!role && (
               <div style={{marginTop:18}}>
@@ -54,6 +63,9 @@ const Dashboard = () => {
                   <li>Grievance Overview</li>
                   <li>Manage Notices</li>
                 </ul>
+                <div style={{marginTop:12}}>
+                  <button className="btn-primary" onClick={() => navigate('/student-records')}>View Student Records</button>
+                </div>
               </div>
             )}
           </section>

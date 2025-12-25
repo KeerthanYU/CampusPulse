@@ -25,8 +25,8 @@ const Navbar = () => {
               {user.avatar ? <img src={user.avatar} alt="avatar"/> : initials}
             </button>
             <div className="profile-dropdown">
-              <div className="dropdown-item">{user.name}</div>
-              <div className="dropdown-item muted">Role: {role || 'Not set'}</div>
+              <div className="dropdown-item" style={{fontWeight:700}}>{user.name}</div>
+              <div className="dropdown-item muted">Signed in as {role ? role.charAt(0).toUpperCase()+role.slice(1) : 'Guest'}</div>
               <div className="dropdown-divider" />
               <button className="dropdown-item" onClick={() => { logout(); navigate('/login'); }}>Logout</button>
             </div>

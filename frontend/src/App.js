@@ -5,6 +5,7 @@ import Login from './pages/Login.jsx';
 import RoleChoice from './pages/RoleChoice.jsx';
 import Dashboard from './pages/Dashboard';
 import Profile from './pages/Profile';
+import StudentRecords from './pages/StudentRecords';
 
 // App sets up top-level routes. ProtectedRoute ensures auth required pages.
 function App() {
@@ -17,6 +18,14 @@ function App() {
 				element={
 					<ProtectedRoute>
 						<Dashboard />
+					</ProtectedRoute>
+				}
+			/>
+			<Route
+				path="/student-records"
+				element={
+					<ProtectedRoute>
+						<StudentRecords />
 					</ProtectedRoute>
 				}
 			/>

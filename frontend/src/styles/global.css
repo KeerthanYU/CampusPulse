@@ -174,4 +174,19 @@ body {
 
 .error{color:#b00020;background:#fff0f1;padding:8px;border-radius:8px}
 
+/* Unauthorized modal */
+.unauth-overlay{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;padding:24px;z-index:1200}
+.unauth-card{width:420px;border-radius:14px;overflow:hidden;box-shadow:0 24px 60px rgba(11,18,32,0.35);background:transparent}
+.unauth-gradient{height:120px;background:linear-gradient(135deg,#ff7ab6 0%,#8a6bff 40%,#3dd0ff 100%);filter:saturate(1.05)}
+.unauth-body{background:#fff;padding:18px;border-radius:8px;transform:translateY(-28px);margin:-28px 14px 12px 14px;text-align:center}
+.unauth-body h2{margin:0;color:#0b1220}
+.unauth-body .muted{color:var(--muted);margin-top:6px}
+
+/* secondary button */
+.btn-secondary{background:transparent;border:1px solid rgba(16,24,40,0.06);padding:8px 12px;border-radius:8px;cursor:pointer}
+
+.records-table{width:100%;border-collapse:collapse}
+.records-table th,.records-table td{padding:8px 10px;border-bottom:1px solid rgba(16,24,40,0.04);text-align:left}
+
+
 
