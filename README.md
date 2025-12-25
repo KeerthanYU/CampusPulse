@@ -133,10 +133,9 @@ Kuladeep M N
 Karthik
 Keerthan Y U
 Computer Science Engineering
-Academic Project – 2025
+Hackathon Project – 2025
 
-## ⭐ Professional Summary Line
+## ⭐ Summary Line
 
 CampusPulse demonstrates the integration of AI, cloud computing, and full-stack development to build a scalable, real-world campus information system.
 
-If you need this adjusted to match a specific stack or want CI badges, a demo GIF, or contributor guidelines added, I can update it next.
