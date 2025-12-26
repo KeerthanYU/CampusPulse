@@ -1,6 +1,7 @@
 import React from 'react';
 import { useAuth } from '../context/AuthContext';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
+import ThemeToggle from './ThemeToggle';
 
 // Navbar displays brand and profile actions
 const Navbar = () => {
@@ -10,15 +11,24 @@ const Navbar = () => {
   const initials = user?.name ? user.name.slice(0,2).toUpperCase() : 'CP';
 
   return (
-    <header className="navbar">
+    <header className="navbar glass">
       <div className="nav-left">
         <div className="nav-logo">
           <div className="logo" />
           <span className="app-name">CampusPulse</span>
         </div>
+        <nav className="nav-links">
+          <Link to="/" className="nav-link">Home</Link>
+          <Link to="/dashboard" className="nav-link">Dashboard</Link>
+          <Link to="/student-records" className="nav-link">Records</Link>
+        </nav>
       </div>
 
       <div className="nav-right">
+        <div className="nav-actions">
+          <ThemeToggle />
+        </div>
+
         {user && (
           <div className="profile-menu">
             <button className="avatar" onClick={() => navigate('/profile')} title={user.name}>

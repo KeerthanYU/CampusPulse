@@ -30,7 +30,7 @@ const Register = () => {
     setError(null);
     setLoading(true);
     try {
-      await googleLogin();
+      await googleLogin(role);
       navigate('/dashboard');
     } catch (err) {
       setError(err.message || 'Google sign-in failed');

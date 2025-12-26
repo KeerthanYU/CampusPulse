@@ -34,19 +34,20 @@ export const loginUser = async (email, password) => {
   return { user, role: data.role };
 };
 
-export const signInWithGoogle = async () => {
+export const signInWithGoogle = async (role = undefined) => {
   const provider = new GoogleAuthProvider();
   const userCredential = await signInWithPopup(auth, provider);
   const user = userCredential.user;
 
   const idToken = await user.getIdToken();
+  const body = role ? { role } : {};
   const resp = await fetch('/api/auth/login', {
     method: 'POST',
     headers: {
       'Authorization': `Bearer ${idToken}`,
       'Content-Type': 'application/json'
     },
-    body: JSON.stringify({})
+    body: JSON.stringify(body)
   });
 
   if (!resp.ok) {
@@ -57,3 +58,4 @@ export const signInWithGoogle = async () => {
   const data = await resp.json();
   return { user, role: data.role };
 };
+

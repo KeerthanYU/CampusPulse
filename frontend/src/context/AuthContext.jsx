@@ -65,8 +65,8 @@ export const AuthProvider = ({ children }) => {
     return { user: res.user, role: res.role };
   };
 
-  const googleLogin = async () => {
-    const res = await signInWithGoogle();
+  const googleLogin = async (role = undefined) => {
+    const res = await signInWithGoogle(role);
     const userObj = { name: res.user.displayName || '', email: res.user.email };
     setUser(userObj);
     setRole(res.role || null);
