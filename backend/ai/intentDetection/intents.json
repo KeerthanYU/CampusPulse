@@ -1,0 +1,8 @@
+{
+  "greeting": ["hi", "hello", "hey"],
+  "timetable": ["timetable", "schedule", "class timing"],
+  "faculty_info": ["faculty", "teacher", "professor"],
+  "grievance": ["complaint", "grievance", "issue"],
+  "exam_info": ["exam", "internal", "external"],
+  "goodbye": ["bye", "thank you"]
+}
