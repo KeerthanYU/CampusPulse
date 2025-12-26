@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { mockLogin } from '../utils/mockAuth';
+import { signInWithGoogle } from '../services/authService';
 
 // AuthContext provides login state, user and role management
 const AuthContext = createContext(null);
@@ -36,13 +37,31 @@ export const AuthProvider = ({ children }) => {
     return res;
   };
 
+  const register = async (name, email, password, role = 'student') => {
+    // simulate server latency and user creation
+    await new Promise((r) => setTimeout(r, 400));
+    const userObj = { name, email };
+    setUser(userObj);
+    setRole(role);
+    return { user: userObj, role };
+  };
+
+  const googleLogin = async () => {
+    const res = await signInWithGoogle();
+    // res: { user, role }
+    const userObj = { name: res.user.displayName || '', email: res.user.email };
+    setUser(userObj);
+    setRole(res.role || null);
+    return res;
+  };
+
   const logout = () => {
     setUser(null);
     setRole(null);
     try { localStorage.removeItem('cp_auth'); } catch (e) {}
   };
 
-  const value = { user, role, setRole, login, logout };
+  const value = { user, role, setRole, login, register, googleLogin, logout };
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };
 

@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 
 const Login = () => {
-  const { login } = useAuth();
+  const { login, googleLogin } = useAuth();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState(null);
@@ -17,6 +17,16 @@ const Login = () => {
       navigate('/dashboard');
     } catch (err) {
       setError(err.message || 'Login failed');
+    }
+  };
+
+  const handleGoogle = async () => {
+    setError(null);
+    try {
+      await googleLogin();
+      navigate('/dashboard');
+    } catch (err) {
+      setError(err.message || 'Google login failed');
     }
   };
 
@@ -46,8 +56,9 @@ const Login = () => {
               </div>
               {error && <div className="error">{error}</div>}
               <button className="btn-primary" type="submit">Log in</button>
+              <button type="button" className="btn-google" onClick={handleGoogle}>Sign in with Google</button>
               <div style={{textAlign:'center',paddingTop:6,color:'var(--muted)'}}>
-                Don't have a CampusPulse account? <a href="#">Register now</a>
+                Don't have a CampusPulse account? <Link to="/register">Register now</Link>
               </div>
             </div>
           </form>
