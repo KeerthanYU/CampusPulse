@@ -10,8 +10,12 @@
     "react-scripts": "5.0.1"
   },
   "scripts": {
-    "start": "react-scripts start",
+    "start": "node start-cra.js",
     "build": "react-scripts build"
+  },
+  "proxy": "http://localhost:5000",
+  "devDependencies": {
+    "cross-env": "^7.0.3"
   },
   "browserslist": [
     ">0.2%",

@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { mockLogin } from '../utils/mockAuth';
-import { signInWithGoogle } from '../services/authService';
+import { signInWithGoogle, loginUser } from '../services/authService';
 
 // AuthContext provides login state, user and role management
 const AuthContext = createContext(null);
@@ -32,23 +32,41 @@ export const AuthProvider = ({ children }) => {
 
   const login = async (email, password) => {
     // mockLogin simulates auth; returns user object
-    const res = await mockLogin(email, password);
-    setUser(res);
-    return res;
+    // try real auth first
+    try {
+      const res = await loginUser(email, password);
+      setUser({ name: res.user.displayName || res.user.email.split('@')[0], email: res.user.email });
+      setRole(res.role || null);
+      return res;
+    } catch (err) {
+      // fallback to mock
+      const res = await mockLogin(email, password);
+      setUser(res);
+      return res;
+    }
   };
 
   const register = async (name, email, password, role = 'student') => {
-    // simulate server latency and user creation
-    await new Promise((r) => setTimeout(r, 400));
-    const userObj = { name, email };
-    setUser(userObj);
-    setRole(role);
-    return { user: userObj, role };
+    // call backend to create user
+    const resp = await fetch('/api/auth/register', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name, email, password, role })
+    });
+    if (!resp.ok) {
+      const err = await resp.json().catch(() => ({}));
+      throw new Error(err.message || 'Registration failed');
+    }
+
+    // sign in client-side using existing authService loginUser which will fetch role from backend
+    const res = await loginUser(email, password);
+    setUser({ name: res.user.displayName || res.user.email.split('@')[0], email: res.user.email });
+    setRole(res.role || null);
+    return { user: res.user, role: res.role };
   };
 
   const googleLogin = async () => {
     const res = await signInWithGoogle();
-    // res: { user, role }
     const userObj = { name: res.user.displayName || '', email: res.user.email };
     setUser(userObj);
     setRole(res.role || null);

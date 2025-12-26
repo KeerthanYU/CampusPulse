@@ -15,17 +15,23 @@ export const loginUser = async (email, password) => {
 
   const user = userCredential.user;
 
-  const docRef = doc(db, "users", user.uid);
-  const docSnap = await getDoc(docRef);
+  const idToken = await user.getIdToken();
+  const resp = await fetch('/api/auth/login', {
+    method: 'POST',
+    headers: {
+      'Authorization': `Bearer ${idToken}`,
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({})
+  });
 
-  if (!docSnap.exists()) {
-    throw new Error("Role not assigned");
+  if (!resp.ok) {
+    const err = await resp.json().catch(() => ({}));
+    throw new Error(err.message || 'Failed to fetch role');
   }
 
-  return {
-    user,
-    role: docSnap.data().role
-  };
+  const data = await resp.json();
+  return { user, role: data.role };
 };
 
 export const signInWithGoogle = async () => {
@@ -33,15 +39,21 @@ export const signInWithGoogle = async () => {
   const userCredential = await signInWithPopup(auth, provider);
   const user = userCredential.user;
 
-  const docRef = doc(db, "users", user.uid);
-  const docSnap = await getDoc(docRef);
+  const idToken = await user.getIdToken();
+  const resp = await fetch('/api/auth/login', {
+    method: 'POST',
+    headers: {
+      'Authorization': `Bearer ${idToken}`,
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({})
+  });
 
-  if (!docSnap.exists()) {
-    throw new Error("Role not assigned");
+  if (!resp.ok) {
+    const err = await resp.json().catch(() => ({}));
+    throw new Error(err.message || 'Failed to fetch role');
   }
 
-  return {
-    user,
-    role: docSnap.data().role
-  };
+  const data = await resp.json();
+  return { user, role: data.role };
 };
