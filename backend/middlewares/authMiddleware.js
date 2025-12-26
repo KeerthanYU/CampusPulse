@@ -1,4 +1,4 @@
-import { adminAuth } from "../config/firebaseAdmin.js";
+import { adminAuth, adminDB } from "../config/firebaseAdmin.js";
 
 export const authMiddleware = async (req, res, next) => {
   try {
@@ -6,7 +6,14 @@ export const authMiddleware = async (req, res, next) => {
     if (!token) throw new Error("No token");
 
     const decoded = await adminAuth.verifyIdToken(token);
-    req.user = decoded;
+
+    // attach role by fetching Firestore user doc
+    const uid = decoded.uid;
+    const userRef = adminDB.collection("users").doc(uid);
+    const userDoc = await userRef.get();
+    const role = userDoc.exists ? userDoc.data().role : null;
+
+    req.user = { ...decoded, role };
     next();
   } catch (err) {
     res.status(401).json({ message: "Unauthorized" });
