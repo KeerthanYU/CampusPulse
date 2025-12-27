@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { mockLogin } from '../utils/mockAuth';
 import { signInWithGoogle, loginUser } from '../services/authService';
+import { extractClass } from '../utils/intentDetector';
 
 // AuthContext provides login state, user and role management
 const AuthContext = createContext(null);
@@ -10,6 +11,7 @@ export const useAuth = () => useContext(AuthContext);
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null); // { name, email }
   const [role, setRole] = useState(null); // 'student' | 'teacher' | 'administrative'
+  const [studentClass, setStudentClass] = useState(null); // e.g., "CSE 3 B"
 
   // restore from localStorage
   useEffect(() => {
@@ -19,16 +21,17 @@ export const AuthProvider = ({ children }) => {
         const parsed = JSON.parse(raw);
         setUser(parsed.user || null);
         setRole(parsed.role || null);
+        setStudentClass(parsed.studentClass || null);
       }
     } catch (err) {
-      // ignore
+      console.error('Error restoring auth from localStorage:', err);
     }
   }, []);
 
   useEffect(() => {
-    const payload = { user, role };
+    const payload = { user, role, studentClass };
     try { localStorage.setItem('cp_auth', JSON.stringify(payload)); } catch (e) {}
-  }, [user, role]);
+  }, [user, role, studentClass]);
 
   const login = async (email, password) => {
     // mockLogin simulates auth; returns user object
@@ -41,7 +44,9 @@ export const AuthProvider = ({ children }) => {
     } catch (err) {
       // fallback to mock
       const res = await mockLogin(email, password);
-      setUser(res);
+      // res is expected to be { user: { displayName, email }, role }
+      setUser({ name: res.user.displayName || res.user.email.split('@')[0], email: res.user.email });
+      setRole(res.role || null);
       return res;
     }
   };
@@ -73,13 +78,47 @@ export const AuthProvider = ({ children }) => {
     return res;
   };
 
+  /**
+   * Store student's class/section
+   * Called when user says "I am in CSE 3 B" or similar
+   * Extracts class identifier from message and stores in state + localStorage
+   */
+  const setClass = (classMessage) => {
+    try {
+      const extracted = extractClass(classMessage);
+      if (extracted) {
+        setStudentClass(extracted);
+        console.log('Student class set to:', extracted);
+        return extracted;
+      } else {
+        console.warn('Could not extract class from message:', classMessage);
+        return null;
+      }
+    } catch (err) {
+      console.error('Error setting student class:', err);
+      return null;
+    }
+  };
+
   const logout = () => {
     setUser(null);
     setRole(null);
+    setStudentClass(null);
     try { localStorage.removeItem('cp_auth'); } catch (e) {}
   };
 
-  const value = { user, role, setRole, login, register, googleLogin, logout };
+  const value = {
+    user,
+    role,
+    studentClass,
+    setRole,
+    setClass,
+    login,
+    register,
+    googleLogin,
+    logout
+  };
+
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };
 

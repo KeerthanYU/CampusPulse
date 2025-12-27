@@ -3,16 +3,23 @@
 
 export const mockLogin = async (email, password) => {
   // fake latency
-  await new Promise(r => setTimeout(r, 350));
+  await new Promise(r => setTimeout(r, 250));
 
   // very simple validation
   if (!email || !password) throw new Error('Invalid credentials');
 
   // derive name from email local part
   const local = email.split('@')[0] || 'user';
-  const name = local.charAt(0).toUpperCase() + local.slice(1);
+  const displayName = local.charAt(0).toUpperCase() + local.slice(1);
 
-  return { email, name };
+  // Return shape similar to real `loginUser` response so callers can use the same fields
+  return {
+    user: {
+      displayName,
+      email
+    },
+    role: 'student'
+  };
 };
 
 export default { mockLogin };
